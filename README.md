@@ -3,7 +3,6 @@
 A simple fullstack feedback management system built as an entry task for the **Fullstack Builder Residency**.
 
 🌐 **Live Demo:** https://feedback.saragh.ir
-📦 **Repository:** [Feedback-Board-Spring-1405](https://github.com/sarahghazavi/Feedback-Board-Spring-1405)
 
 ---
 
@@ -73,53 +72,6 @@ The goal of this project was to build a clean and functional product with a simp
 * Docker Compose
 * Nginx
 * SSL / HTTPS
-
----
-
-## Screenshots
-
-### Public Feedback Page
-
-![Public Feedback Page](./screenshots/public-feedback.png)
-
-### Admin Login
-
-![Admin Login](./screenshots/admin-login.png)
-
-### Admin Dashboard
-
-![Admin Dashboard](./screenshots/admin-dashboard.png)
-
----
-
-## Project Structure
-
-```text
-feedback-board/
-├── backend/
-│   ├── app/
-│   │   ├── crud.py
-│   │   ├── database.py
-│   │   ├── main.py
-│   │   ├── models.py
-│   │   └── schemas.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── frontend/
-│   ├── app/
-│   │   ├── admin/
-│   │   ├── login/
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── Dockerfile
-│   ├── next.config.ts
-│   └── package.json
-├── screenshots/
-├── docker-compose.yml
-├── .env.example
-├── .gitignore
-└── README.md
-```
 
 ---
 
@@ -358,45 +310,6 @@ submitted
 in_review
 resolved
 ```
-
----
-
-## Deployment Notes
-
-The project is deployed at:
-
-```text
-https://feedback.saragh.ir
-```
-
-Production deployment setup:
-
-* VPS running Ubuntu
-* Docker Compose for running frontend and backend containers
-* Nginx as a reverse proxy
-* SSL enabled with Certbot
-* Public traffic served over HTTPS
-* API served through `/api`
-* Docker services bound to `127.0.0.1` and exposed only through Nginx
-
-Production environment variables use:
-
-```env
-NEXT_PUBLIC_API_URL=https://feedback.saragh.ir/api
-FRONTEND_ORIGIN=https://feedback.saragh.ir
-```
-
----
-
-## Design and Technical Decisions
-
-* **FastAPI** was chosen for the backend because it provides a simple, fast, and well-documented way to build REST APIs.
-* **SQLAlchemy** was used to keep database access structured and maintainable.
-* **SQLite** was selected for simplicity and quick deployment. For a larger production system, PostgreSQL would be a better choice.
-* **Next.js** was used for the frontend to build a clean, component-based UI.
-* **Tailwind CSS** was used to create a responsive and modern interface quickly.
-* **Bearer token authentication** was implemented to protect admin-only endpoints.
-* **Docker Compose** was added to make the project easier to run and deploy.
 
 ---
 
