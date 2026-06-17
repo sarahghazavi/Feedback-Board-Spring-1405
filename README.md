@@ -324,17 +324,6 @@ resolved
 
 ---
 
-## Possible Improvements
-
-* Add pagination or filtering for feedbacks
-* Add feedback deletion for admin users
-* Add better token expiration and refresh logic
-* Replace SQLite with PostgreSQL for production-scale usage
-* Add automated tests
-* Add CI/CD workflow for deployment
-
----
-
 ## Author
 
 Built by **Sara Ghazavi** as an entry task for the **Fullstack Builder Residency**.
