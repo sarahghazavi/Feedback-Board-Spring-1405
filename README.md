@@ -71,20 +71,6 @@ feedback-board/
 └── README.md
 ```
 
-## Screenshots
-
-### Feedback Submission Page
-
-![Feedback submission page](screenshots/home.png)
-
-### Admin Login Page
-
-![Admin login page](screenshots/login.png)
-
-### Admin Dashboard
-
-![Admin dashboard](screenshots/dashboard.png)
-
 ## Local Setup
 
 ### 1. Clone the repository
@@ -277,32 +263,6 @@ Backend:
 http://localhost:8000
 ```
 
-## Technical Decisions
-
-### FastAPI for Backend
-
-FastAPI was chosen because it is lightweight, fast to develop with, and provides automatic API documentation. It is a good fit for building a small but structured REST API.
-
-### SQLAlchemy for Database Access
-
-SQLAlchemy was used to keep database logic clean and separated from API routes. The current implementation uses SQLite for simplicity, but the project structure allows switching to PostgreSQL with minimal changes.
-
-### SQLite for Local Development
-
-SQLite was selected to make the project easy to run locally without requiring extra database setup. For a production environment, PostgreSQL would be a better choice.
-
-### Next.js and Tailwind CSS for Frontend
-
-Next.js was used for building a modern frontend structure, while Tailwind CSS helped create a clean, responsive, and minimal UI quickly.
-
-### Simple Admin Authentication
-
-A simple token-based admin login was implemented to protect the dashboard and status update actions. This keeps the project focused and avoids unnecessary complexity while still covering the basic access-control requirement.
-
-### Avoiding Over-engineering
-
-The goal was to build a functional end-to-end MVP within a limited time. For this reason, features like role management, email notifications, advanced filtering, and complex authentication flows were intentionally left out.
-
 ## Assumptions
 
 * Public users can only submit feedback.
@@ -310,16 +270,6 @@ The goal was to build a functional end-to-end MVP within a limited time. For thi
 * Feedback deletion is not included because the task focuses on registration, tracking, and status management.
 * SQLite is enough for local review and simple deployment, but PostgreSQL can be used in a production setup.
 * Admin credentials are managed through environment variables.
-
-## Possible Improvements
-
-* Add PostgreSQL for production deployment
-* Add feedback filtering by status
-* Add search in the admin dashboard
-* Add pagination for large feedback lists
-* Add created/updated timestamps in a more detailed view
-* Add stronger authentication with JWT expiration
-* Add tests for API endpoints
 
 ## Author
 
