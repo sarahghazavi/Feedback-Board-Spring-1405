@@ -1,26 +1,54 @@
 # Feedback Board
 
-A simple, modern feedback management system built as an end-to-end fullstack project.
+A simple fullstack feedback management system built as an entry task for the **Fullstack Builder Residency**.
 
-Users can submit feedback through a clean public form, and an admin can log in to view all submitted feedbacks and update their statuses.
+🌐 **Live Demo:** https://feedback.saragh.ir
+📦 **Repository:** [Feedback-Board-Spring-1405](https://github.com/sarahghazavi/Feedback-Board-Spring-1405)
+
+---
+
+## Overview
+
+Feedback Board is a small end-to-end product that allows users to submit feedback and allows an admin to review, track, and update the status of each feedback item.
+
+The goal of this project was to build a clean and functional product with a simple architecture, clear API design, persistent data storage, authentication for admin-only actions, and a deployable setup.
+
+---
 
 ## Features
 
-* Submit feedback with title and message
-* Default feedback status: `submitted`
+### Public User
+
+* Submit feedback using a simple public form
+* Feedback includes:
+
+  * Title
+  * Message
+* Newly submitted feedback is created with the default status: `submitted`
+
+### Admin
+
 * Admin login page
 * Protected admin dashboard
-* View all feedbacks in the dashboard
+* View all submitted feedbacks
+* View summary statistics
 * Update feedback status:
 
   * `submitted`
   * `in_review`
   * `resolved`
-* Summary cards for feedback statistics
-* Responsive and modern UI
-* REST API built with FastAPI
-* SQLite database for simple local setup
-* Docker support for easier deployment
+* Logout functionality
+
+### Deployment
+
+* Dockerized backend and frontend
+* Docker Compose setup
+* Deployed on a VPS
+* Nginx reverse proxy
+* HTTPS enabled with SSL
+* Backend and frontend are only exposed locally behind Nginx
+
+---
 
 ## Tech Stack
 
@@ -31,6 +59,7 @@ Users can submit feedback through a clean public form, and an admin can log in t
 * SQLAlchemy
 * SQLite
 * Pydantic
+* Uvicorn
 
 ### Frontend
 
@@ -42,6 +71,26 @@ Users can submit feedback through a clean public form, and an admin can log in t
 
 * Docker
 * Docker Compose
+* Nginx
+* SSL / HTTPS
+
+---
+
+## Screenshots
+
+### Public Feedback Page
+
+![Public Feedback Page](./screenshots/public-feedback.png)
+
+### Admin Login
+
+![Admin Login](./screenshots/admin-login.png)
+
+### Admin Dashboard
+
+![Admin Dashboard](./screenshots/admin-dashboard.png)
+
+---
 
 ## Project Structure
 
@@ -55,8 +104,7 @@ feedback-board/
 │   │   ├── models.py
 │   │   └── schemas.py
 │   ├── Dockerfile
-│   ├── requirements.txt
-│   └── .env.example
+│   └── requirements.txt
 ├── frontend/
 │   ├── app/
 │   │   ├── admin/
@@ -64,23 +112,31 @@ feedback-board/
 │   │   ├── layout.tsx
 │   │   └── page.tsx
 │   ├── Dockerfile
+│   ├── next.config.ts
 │   └── package.json
 ├── screenshots/
 ├── docker-compose.yml
 ├── .env.example
+├── .gitignore
 └── README.md
 ```
+
+---
 
 ## Local Setup
 
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd feedback-board
+git clone https://github.com/sarahghazavi/Feedback-Board-Spring-1405.git
+cd Feedback-Board-Spring-1405
 ```
 
-### 2. Backend setup
+---
+
+## Run Locally Without Docker
+
+### 2. Backend Setup
 
 ```bash
 cd backend
@@ -106,7 +162,7 @@ Run the backend:
 uvicorn app.main:app --reload
 ```
 
-The backend will be available at:
+Backend will be available at:
 
 ```text
 http://127.0.0.1:8000
@@ -118,7 +174,9 @@ Health check:
 curl http://127.0.0.1:8000/health
 ```
 
-### 3. Frontend setup
+---
+
+### 3. Frontend Setup
 
 Open another terminal:
 
@@ -139,98 +197,13 @@ Run the frontend:
 npm run dev
 ```
 
-The frontend will be available at:
+Frontend will be available at:
 
 ```text
 http://localhost:3000
 ```
 
-## Admin Login
-
-Default local admin credentials:
-
-```text
-username: admin
-password: admin123
-```
-
-These values can be changed through environment variables.
-
-## API Endpoints
-
-### Health Check
-
-```http
-GET /health
-```
-
-### Submit Feedback
-
-```http
-POST /feedback
-```
-
-Request body:
-
-```json
-{
-  "title": "Login issue",
-  "message": "I cannot log in to my account."
-}
-```
-
-### Admin Login
-
-```http
-POST /auth/login
-```
-
-Request body:
-
-```json
-{
-  "username": "admin",
-  "password": "admin123"
-}
-```
-
-### List Feedbacks
-
-Protected endpoint:
-
-```http
-GET /feedback
-```
-
-Required header:
-
-```http
-Authorization: Bearer <admin-token>
-```
-
-### Update Feedback Status
-
-Protected endpoint:
-
-```http
-PATCH /feedback/{feedback_id}/status
-```
-
-Request body:
-
-```json
-{
-  "status": "in_review"
-}
-```
-
-Valid statuses:
-
-```text
-submitted
-in_review
-resolved
-```
+---
 
 ## Run with Docker
 
@@ -263,14 +236,192 @@ Backend:
 http://localhost:8000
 ```
 
+---
+
+## Admin Login
+
+Default local admin credentials:
+
+```text
+username: admin
+password: admin123
+```
+
+These values are configurable through environment variables.
+
+For security reasons, production admin credentials are not included in this repository.
+
+---
+
+## API Endpoints
+
+### Health Check
+
+```http
+GET /health
+```
+
+---
+
+### Submit Feedback
+
+```http
+POST /feedback
+```
+
+Request body:
+
+```json
+{
+  "title": "Login issue",
+  "message": "I cannot log in to my account."
+}
+```
+
+Response example:
+
+```json
+{
+  "id": 1,
+  "title": "Login issue",
+  "message": "I cannot log in to my account.",
+  "status": "submitted",
+  "created_at": "2026-06-17T18:19:48.190038",
+  "updated_at": "2026-06-17T18:19:48.190056"
+}
+```
+
+---
+
+### Admin Login
+
+```http
+POST /auth/login
+```
+
+Request body:
+
+```json
+{
+  "username": "admin",
+  "password": "admin123"
+}
+```
+
+Response example:
+
+```json
+{
+  "access_token": "admin-token",
+  "token_type": "bearer"
+}
+```
+
+---
+
+### List Feedbacks
+
+Protected endpoint:
+
+```http
+GET /feedback
+```
+
+Required header:
+
+```http
+Authorization: Bearer <admin-token>
+```
+
+---
+
+### Update Feedback Status
+
+Protected endpoint:
+
+```http
+PATCH /feedback/{feedback_id}/status
+```
+
+Request body:
+
+```json
+{
+  "status": "in_review"
+}
+```
+
+Valid statuses:
+
+```text
+submitted
+in_review
+resolved
+```
+
+---
+
+## Deployment Notes
+
+The project is deployed at:
+
+```text
+https://feedback.saragh.ir
+```
+
+Production deployment setup:
+
+* VPS running Ubuntu
+* Docker Compose for running frontend and backend containers
+* Nginx as a reverse proxy
+* SSL enabled with Certbot
+* Public traffic served over HTTPS
+* API served through `/api`
+* Docker services bound to `127.0.0.1` and exposed only through Nginx
+
+Production environment variables use:
+
+```env
+NEXT_PUBLIC_API_URL=https://feedback.saragh.ir/api
+FRONTEND_ORIGIN=https://feedback.saragh.ir
+```
+
+---
+
+## Design and Technical Decisions
+
+* **FastAPI** was chosen for the backend because it provides a simple, fast, and well-documented way to build REST APIs.
+* **SQLAlchemy** was used to keep database access structured and maintainable.
+* **SQLite** was selected for simplicity and quick deployment. For a larger production system, PostgreSQL would be a better choice.
+* **Next.js** was used for the frontend to build a clean, component-based UI.
+* **Tailwind CSS** was used to create a responsive and modern interface quickly.
+* **Bearer token authentication** was implemented to protect admin-only endpoints.
+* **Docker Compose** was added to make the project easier to run and deploy.
+
+---
+
 ## Assumptions
 
 * Public users can only submit feedback.
 * Only the admin can view feedbacks and update their statuses.
 * Feedback deletion is not included because the task focuses on registration, tracking, and status management.
-* SQLite is enough for local review and simple deployment, but PostgreSQL can be used in a production setup.
-* Admin credentials are managed through environment variables.
+* SQLite is enough for local review and simple deployment.
+* Admin credentials and tokens should be provided through environment variables.
+* Production secrets are not committed to the repository.
+
+---
+
+## Possible Improvements
+
+* Add pagination or filtering for feedbacks
+* Add feedback deletion for admin users
+* Add better token expiration and refresh logic
+* Replace SQLite with PostgreSQL for production-scale usage
+* Add automated tests
+* Add CI/CD workflow for deployment
+
+---
 
 ## Author
 
-Built by Sara Ghazavi as an entry task for the Fullstack Builder Residency.
+Built by **Sara Ghazavi** as an entry task for the **Fullstack Builder Residency**.
