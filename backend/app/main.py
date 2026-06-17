@@ -1,11 +1,15 @@
 import os
+import secrets
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
 from app.database import Base, engine, get_db
+
+load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
@@ -17,6 +21,10 @@ app = FastAPI(
 
 frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
 
+admin_username = os.getenv("ADMIN_USERNAME", "admin")
+admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+admin_token = os.getenv("ADMIN_TOKEN", "change-this-local-admin-token")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[frontend_origin, "http://127.0.0.1:3000"],
@@ -26,9 +34,44 @@ app.add_middleware(
 )
 
 
+def require_admin(authorization: str | None = Header(default=None)) -> bool:
+    if authorization is None or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Admin authentication is required.",
+        )
+
+    token = authorization.replace("Bearer ", "", 1).strip()
+
+    if not secrets.compare_digest(token, admin_token):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid admin token.",
+        )
+
+    return True
+
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+
+@app.post("/auth/login", response_model=schemas.LoginResponse)
+def login(login_data: schemas.LoginRequest):
+    is_valid_username = secrets.compare_digest(login_data.username, admin_username)
+    is_valid_password = secrets.compare_digest(login_data.password, admin_password)
+
+    if not is_valid_username or not is_valid_password:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password.",
+        )
+
+    return {
+        "access_token": admin_token,
+        "token_type": "bearer",
+    }
 
 
 @app.post(
@@ -44,7 +87,10 @@ def create_feedback(
 
 
 @app.get("/feedback", response_model=list[schemas.FeedbackResponse])
-def list_feedbacks(db: Session = Depends(get_db)):
+def list_feedbacks(
+    db: Session = Depends(get_db),
+    _: bool = Depends(require_admin),
+):
     return crud.get_feedbacks(db=db)
 
 
@@ -53,6 +99,7 @@ def change_feedback_status(
     feedback_id: int,
     status_data: schemas.FeedbackStatusUpdate,
     db: Session = Depends(get_db),
+    _: bool = Depends(require_admin),
 ):
     feedback = crud.get_feedback_by_id(db=db, feedback_id=feedback_id)
 
